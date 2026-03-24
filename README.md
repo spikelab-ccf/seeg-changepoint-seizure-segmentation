@@ -34,31 +34,31 @@ This repository contains the analysis code for our paper on automated three-phas
 ## Repository Structure
 
 ```
-├── src/                              # Core reusable modules
-│   ├── features.py                   # Feature extraction (RMS, bandpower, LL, SE)
-│   ├── detection.py                  # PELT-based changepoint detection
-│   └── metrics.py                    # Evaluation metrics (MAE, RMSE, accuracy)
+├── src/
+│   ├── features.py
+│   ├── detection.py
+│   └── metrics.py
 │
 ├── scripts/
-│   ├── 01_feature_extraction/        # Feature extraction & example segmentation plot
-│   │   └── stacked_feature_fixed.py  # Fig. 2: Extract features + plot representative segmentation example
+│   ├── 01_feature_extraction/
+│   │   └── stacked_feature_fixed.py
 │   │
-│   ├── 02_evaluation/                # Core pipeline & model evaluation
-│   │   ├── run_cv_fold.py                     # Main pipeline: LOSO-CV + Optuna + PELT detection
-│   │   └── evaluate_final_model.py            # Evaluate final model from CV results (Tables 2 & 5)
+│   ├── 02_evaluation/
+│   │   ├── run_cv_fold.py
+│   │   └── evaluate_final_model.py
 │   │
-│   ├── 03_analysis/                  # Feature importance & ablation analyses
-│   │   ├── generate_ablation_tables_and_plots.py      # Table 4: Ablation study + Wilcoxon signed-rank test
-│   │   ├── analyze_stage_feature_importance_clean.py  # Section 3.4: Phase-specific feature importance
-│   │   └── extract_common_parameters.py               # Table 3: Optimised window/penalty parameters
+│   ├── 03_analysis/
+│   │   ├── generate_ablation_tables_and_plots.py
+│   │   ├── analyze_stage_feature_importance_clean.py
+│   │   └── extract_common_parameters.py
 │   │
-│   └── 04_visualization/             # Figure generation for publication
-│       ├── event_plot_fixed_end.py                          # Fig. 3: Event-related avg feature dynamics (aligned heatmaps)
-│       ├── plot_from_processed_data.py                      # Fig. 3: Plot from pre-processed epoched data
-│       ├── create_spider_plots_stage_specific.py            # Fig. 4: Radar plots of phase-specific feature importance
-│       └── create_publication_ready_visualizations_fixed.py # Fig. 5: Feature importance temporal evolution
+│   └── 04_visualization/
+│       ├── event_plot_fixed_end.py
+│       ├── plot_from_processed_data.py
+│       ├── create_spider_plots_stage_specific.py
+│       └── create_publication_ready_visualizations_fixed.py
 │
-├── figures/                          # Output directory (not tracked by git)
+├── figures/
 ├── requirements.txt
 └── .gitignore
 ```
