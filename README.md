@@ -41,22 +41,22 @@ This repository contains the analysis code for our paper on automated three-phas
 │
 ├── scripts/
 │   ├── 01_feature_extraction/
-│   │   └── stacked_feature_fixed.py
+│   │   └── plot_segmentation_example.py
 │   │
 │   ├── 02_evaluation/
-│   │   ├── run_cv_fold.py
+│   │   ├── run_loso_cv.py
 │   │   └── evaluate_final_model.py
 │   │
 │   ├── 03_analysis/
 │   │   ├── generate_ablation_tables_and_plots.py
-│   │   ├── analyze_stage_feature_importance_clean.py
-│   │   └── extract_common_parameters.py
+│   │   ├── analyze_feature_importance.py
+│   │   └── extract_optimized_parameters.py
 │   │
 │   └── 04_visualization/
-│       ├── event_plot_fixed_end.py
-│       ├── plot_from_processed_data.py
-│       ├── create_spider_plots_stage_specific.py
-│       └── create_publication_ready_visualizations_fixed.py
+│       ├── aggregate_epoched_features.py
+│       ├── plot_event_aligned_features.py
+│       ├── plot_feature_importance_radar.py
+│       └── plot_feature_importance_evolution.py
 │
 ├── figures/
 ├── requirements.txt
@@ -124,7 +124,7 @@ print(f"Detected onset: {onset_time:.2f} s")
 ### Running a full example
 
 ```bash
-python scripts/01_feature_extraction/stacked_feature.py
+python scripts/01_feature_extraction/plot_segmentation_example.py
 ```
 
 This will generate a multi-panel segmentation plot for the best-centred seizure case in your dataset.
