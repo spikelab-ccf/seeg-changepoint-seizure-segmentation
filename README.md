@@ -1,0 +1,157 @@
+# Three-Phase Seizure Segmentation in Stereotactic EEG Using Envelope-Based Multivariate Changepoint Analysis
+
+**Himanshu Kumar, Guhan Seshadri N P, David Martinez, Imad Najm, Andreas Alexopoulos, Juan C Bulacio, Demitre Serletis, Balu Krishnan**
+
+*Epilepsy Centre, Neurological Institute, Cleveland Clinic, Cleveland, OH, USA*
+
+> Corresponding author: Balu Krishnan
+
+---
+
+## Overview
+
+This repository contains the analysis code for our paper on automated three-phase seizure segmentation in stereoelectroencephalography (SEEG) recordings.
+
+**Key contributions:**
+- A semi-supervised framework that jointly detects **seizure onset**, **intra-ictal transition**, and **seizure termination** in a single pipeline.
+- Seven complementary **envelope-based features**: RMS amplitude, relative bandpower in θ (4–8 Hz), α (8–13 Hz), β (13–30 Hz), γ (30–80 Hz) bands, line length, and spectral entropy.
+- **PELT** (Pruned Exact Linear Time) changepoint detection with phase-specific feature weighting and penalty parameters.
+- Parameters optimised via **nested leave-one-subject-out cross-validation** (LOSO-CV) with Optuna.
+- **Length-invariant** validation through random pre- and post-ictal window extension.
+
+**Dataset:** 32 seizures from 10 patients with drug-resistant focal epilepsy undergoing presurgical SEEG evaluation at Cleveland Clinic. 179 seizure-onset zone bipolar channels analysed.
+
+**Results (mean ± SD absolute error):**
+
+| Phase | MAE (s) | Acc ±5 s |
+|---|---|---|
+| Seizure onset | 4.19 ± 2.69 | 71.6 % |
+| Intra-ictal transition | 6.93 ± 5.75 | 60.0 % |
+| Seizure termination | 3.82 ± 4.24 | 75.0 % |
+
+---
+
+## Repository Structure
+
+```
+├── src/                              # Core reusable modules
+│   ├── features.py                   # Feature extraction (RMS, bandpower, LL, SE)
+│   ├── detection.py                  # PELT-based changepoint detection
+│   └── metrics.py                    # Evaluation metrics (MAE, RMSE, accuracy)
+│
+├── scripts/
+│   ├── 01_feature_extraction/        # Feature extraction & example segmentation plot
+│   │   └── stacked_feature_fixed.py  # Fig. 2: Extract features + plot representative segmentation example
+│   │
+│   ├── 02_evaluation/                # Core pipeline & model evaluation
+│   │   ├── run_cv_fold.py                     # Main pipeline: LOSO-CV + Optuna + PELT detection
+│   │   └── evaluate_final_model.py            # Evaluate final model from CV results (Tables 2 & 5)
+│   │
+│   ├── 03_analysis/                  # Feature importance & ablation analyses
+│   │   ├── generate_ablation_tables_and_plots.py      # Table 4: Ablation study + Wilcoxon signed-rank test
+│   │   ├── analyze_stage_feature_importance_clean.py  # Section 3.4: Phase-specific feature importance
+│   │   └── extract_common_parameters.py               # Table 3: Optimised window/penalty parameters
+│   │
+│   └── 04_visualization/             # Figure generation for publication
+│       ├── event_plot_fixed_end.py                          # Fig. 3: Event-related avg feature dynamics (aligned heatmaps)
+│       ├── plot_from_processed_data.py                      # Fig. 3: Plot from pre-processed epoched data
+│       ├── create_spider_plots_stage_specific.py            # Fig. 4: Radar plots of phase-specific feature importance
+│       └── create_publication_ready_visualizations_fixed.py # Fig. 5: Feature importance temporal evolution
+│
+├── figures/                          # Output directory (not tracked by git)
+├── requirements.txt
+└── .gitignore
+```
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/<your-username>/seeg-changepoint-seizure-segmentation.git
+cd seeg-changepoint-seizure-segmentation
+pip install -r requirements.txt
+```
+
+### Dependencies
+
+| Package | Purpose |
+|---|---|
+| `numpy`, `scipy` | Signal processing & feature extraction |
+| `ruptures` | PELT changepoint detection |
+| `optuna` | Bayesian hyperparameter optimisation |
+| `pandas` | Results management |
+| `matplotlib` | Visualisation |
+| `scikit-learn` | Preprocessing utilities |
+| `statsmodels` | Statistical testing |
+
+---
+
+## Usage
+
+### Feature extraction
+
+```python
+import scipy.io as sio
+from src.features import highpass_filter, extract_all_features, stack_features
+
+# Load your SEEG data (expected format: .mat file with bipolar montage)
+data = sio.loadmat("path/to/seizure.mat", simplify_cells=True)
+signal = data["filtered_signals"][channel_idx]   # 1-D array, 1000 Hz
+
+fs = 1000  # Hz
+
+# Extract all seven features (onset-phase parameters as example)
+features = extract_all_features(signal, fs, window_size=1000, step=150)
+
+# Stack into a feature matrix (normalised, equal weights)
+feature_names = ["rms", "theta", "alpha", "beta", "gamma", "ll", "se"]
+X = stack_features(features, feature_names)
+print(X.shape)  # (n_windows, 7)
+```
+
+### Changepoint detection
+
+```python
+from src.detection import detect_onset, detect_termination, detect_transition, DEFAULT_PARAMS
+
+# Onset detection (uses first changepoint)
+onset_idx = detect_onset(X, DEFAULT_PARAMS["onset"])
+onset_time = features["time_indices"][onset_idx] / fs  # convert samples → seconds
+print(f"Detected onset: {onset_time:.2f} s")
+```
+
+### Running a full example
+
+```bash
+python scripts/01_feature_extraction/stacked_feature.py
+```
+
+This will generate a multi-panel segmentation plot for the best-centred seizure case in your dataset.
+
+---
+
+## Data Availability
+
+SEEG recordings contain protected health information and **cannot be publicly shared**. All procedures were approved by the Cleveland Clinic Institutional Review Board (IRB) and conducted in accordance with the Declaration of Helsinki.
+
+Researchers interested in collaboration or data access may contact the corresponding author.
+
+---
+
+## Citation
+
+If you use this code in your research, please cite:
+
+```
+Kumar H, Seshadri NP G, Martinez D, Najm I, Alexopoulos A, Bulacio JC,
+Serletis D, Krishnan B. Three-Phase Seizure Segmentation in Stereotactic EEG
+Using Envelope-Based Multivariate Changepoint Analysis.
+Annals of Biomedical Engineering, 2026.
+```
+
+---
+
+## License
+
+This code is released for academic and research purposes. Please contact the authors before use in commercial applications.
