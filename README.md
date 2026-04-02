@@ -10,7 +10,9 @@
 
 ## Overview
 
-This repository contains the analysis code for our paper on automated three-phase seizure segmentation in stereoelectroencephalography (SEEG) recordings.
+This repository contains the analysis code for our published paper on automated three-phase seizure segmentation in stereoelectroencephalography (SEEG) recordings.
+
+**Published article:** [Three-Phase Seizure Segmentation in Stereotactic EEG Using Envelope-Based Multivariate Changepoint Analysis](https://link.springer.com/article/10.1007/s10439-026-04097-7)
 
 **Key contributions:**
 - A semi-supervised framework that jointly detects **seizure onset**, **intra-ictal transition**, and **seizure termination** in a single pipeline.
@@ -148,6 +150,7 @@ Kumar H, Seshadri NP G, Martinez D, Najm I, Alexopoulos A, Bulacio JC,
 Serletis D, Krishnan B. Three-Phase Seizure Segmentation in Stereotactic EEG
 Using Envelope-Based Multivariate Changepoint Analysis.
 Annals of Biomedical Engineering, 2026.
+https://link.springer.com/article/10.1007/s10439-026-04097-7
 ```
 
 ---
